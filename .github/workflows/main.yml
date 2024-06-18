@@ -29,7 +29,6 @@ jobs:
           instance-type: t2.medium
           region: us-east-1
           key-name: NV-PPK
-          instance-tags: Name=Strapi-App
           associate-public-ip-address: true
           instance-shutdown-behavior: terminate
           
