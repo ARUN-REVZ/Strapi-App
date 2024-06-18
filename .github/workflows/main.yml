@@ -20,15 +20,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1 # Specify your AWS region
 
-      - name: AWS EC2 Run Instance
-        uses: truemark/aws-ec2-run-instance-action@v5
-        with:
-          subnet-id: subnet-03ead0e82bf80166e
-          security-group-id: sg-02c9d7b34d30a2ac4
-          image-id: ami-0e001c9271cf7f3b9
-          instance-type: t2.medium
-          region: us-east-1
-          key-name: NV-PPK
-          associate-public-ip-address: true
-          instance-shutdown-behavior: terminate
+      - name: Launch EC2 instance
+        id: launch_ec2
+        run: |
+          INSTANCE_ID=$(aws ec2 run-instances \
+            --image-id ami-0e001c9271cf7f3b9 \
+            --instance-type t2.medium \
+            --key-name NV-PPK \
+            --security-group-ids sg-02c9d7b34d30a2ac4 \
+            --subnet-id subnet-03ead0e82bf80166e \
+            --associate-public-ip-address \
+            --query 'Instances[0].InstanceId' \
+            --output text)
+          echo "INSTANCE_ID=${INSTANCE_ID}" >> $GITHUB_ENV
+          echo "Instance ID: $INSTANCE_ID"
+          
+          aws ec2 wait instance-running --instance-ids $INSTANCE_ID
           
