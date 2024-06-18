@@ -48,4 +48,7 @@ jobs:
           echo "Instance ID: $INSTANCE_ID"
           
           aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+      - name: Wait for user data script to finish
+        run: |
+          sleep 360  # Wait time for the user data script to finish execution. Adjust as needed.
           
