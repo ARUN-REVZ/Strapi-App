@@ -1,0 +1,42 @@
+name: AWS EC2 Setup and Script Execution
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-run-instance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Specify your AWS region
+
+      - name: Launch EC2 instance
+        id: launch_ec2
+        run: |
+          INSTANCE_ID=$(aws ec2 run-instances \
+            --image-id ami-0e001c9271cf7f3b9 \  # Replace with your desired AMI ID
+            --count 1 \
+            --instance-type t2.medium \  # Replace with your desired instance type
+            --key-name NV-PPK \  # Replace with your key pair name
+            --security-group-ids sg-02c9d7b34d30a2ac4 \  # Replace with your security group ID
+            --subnet-id subnet-033a8e023e2196376 \  # Replace with your subnet ID
+            --query 'Instances[0].InstanceId' \
+            --output text)
+          echo "INSTANCE_ID=${INSTANCE_ID}" >> $GITHUB_ENV
+
+      - name: Wait for EC2 instance to be in running state
+        run: |
+          aws ec2 wait instance-running --instance-ids ${{ env.INSTANCE_ID }}
+
+
+     
