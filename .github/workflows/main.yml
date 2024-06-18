@@ -23,6 +23,19 @@ jobs:
       - name: Launch EC2 instance
         id: launch_ec2
         run: |
+          USER_DATA=$(base64 -w 0 <<EOF
+          #!/bin/bash
+          sudo apt update
+          curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
+          bash -E nodesource_setup.sh
+          sudo npm install -g yarn
+          npm create-strapi-app simple-strapi --quickstart
+          cd simple-strapi
+          yarn develop
+          EOF
+          )
+          
+          
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id ami-0e001c9271cf7f3b9 \
             --instance-type t2.medium \
@@ -30,6 +43,7 @@ jobs:
             --security-group-ids sg-02c9d7b34d30a2ac4 \
             --subnet-id subnet-03ead0e82bf80166e \
             --associate-public-ip-address \
+            --user-data $USER_DATA \
             --query 'Instances[0].InstanceId' \
             --output text)
           echo "INSTANCE_ID=${INSTANCE_ID}" >> $GITHUB_ENV
