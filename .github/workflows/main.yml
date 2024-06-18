@@ -21,7 +21,7 @@ jobs:
           aws-region: us-east-1 # Specify your AWS region
 
       - name: AWS EC2 Run Instance
-        uses: 
+        uses: truemark/aws-ec2-run-instance-action@v5
         with:
           subnet-id: subnet-03ead0e82bf80166e
           security-group-id: sg-02c9d7b34d30a2ac4
