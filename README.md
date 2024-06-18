@@ -1,4 +1,4 @@
-## Strapi-App
+## Strapi-App ##
 
 ## Strapi Application installation on Ubuntu 22
 
