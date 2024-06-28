@@ -29,8 +29,8 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
           sudo bash -E nodesource_setup.sh
           sudo apt install nodejs -y && sudo npm install -g yarn
-          git clone https://github.com/ARUNKUMAAR-R/strapi-app.git
-          cd strapi-app
+          git clone https://github.com/ARUNKUMAAR-R/Strapi-app.git
+          cd Strapi-app
           yarn start
           EOF
           )
